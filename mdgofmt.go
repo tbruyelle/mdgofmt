@@ -2,6 +2,7 @@ package mdgofmt
 
 import (
 	"bytes"
+	"fmt"
 	"go/format"
 )
 
@@ -16,19 +17,20 @@ func Format(md []byte) ([]byte, error) {
 		// fmt.Println("MD******\n", string(md), "MDEND")
 		start := bytes.Index(md, snipStart)
 		if start == -1 {
+			out.Write(md)
 			break
 		}
 		start += len(snipStart)
 		end := bytes.Index(md[start:], snipEnd)
 		if end == -1 {
-			break
+			return nil, fmt.Errorf("unclosed snippet at character %d", start)
 		}
 		end += start
 		// fmt.Printf("len %d start %d, end %d\n", len(md), start, end)
 
 		out.Write(md[:start])
 		code := md[start:end]
-		// fmt.Println("CODE******\n", string(code), "CODEEND")
+		fmt.Println("CODE******\n", string(code), "CODEEND")
 		formatted, err := format.Source(code)
 		if err != nil {
 			return nil, err
@@ -37,6 +39,8 @@ func Format(md []byte) ([]byte, error) {
 		out.Write(snipEnd)
 		md = md[end+len(snipEnd):]
 	}
-	out.WriteByte('\n')
+	// if out.Len() > 0 {
+	// out.WriteByte('\n')
+	// }
 	return out.Bytes(), nil
 }
