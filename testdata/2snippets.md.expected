@@ -11,6 +11,10 @@ func f(a int, b string) {
 Other stuff
 
 ```go
+package pkg
+
+import "fmt"
+
 func f(a int, b string) {
 	fmt.Print(a, b)
 }

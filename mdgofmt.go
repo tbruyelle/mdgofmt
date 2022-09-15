@@ -35,6 +35,11 @@ func Format(md []byte) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		if bytes.HasSuffix(formatted, []byte("\n")) {
+			// gofmt adds an extra \n when code starts with package, we don't want
+			// that for snippets.
+			formatted = formatted[:len(formatted)-1]
+		}
 		out.Write(formatted)
 		out.Write(snipEnd)
 		md = md[end+len(snipEnd):]
