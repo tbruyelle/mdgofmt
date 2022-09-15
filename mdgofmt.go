@@ -2,7 +2,6 @@ package mdgofmt
 
 import (
 	"bytes"
-	"fmt"
 	"go/format"
 )
 
@@ -12,21 +11,32 @@ var (
 )
 
 func Format(md []byte) ([]byte, error) {
-	var (
-		out   []byte
-		start = bytes.Index(md, snipStart) + len(snipStart)
-		end   = bytes.Index(md[start:], snipEnd) + start
-	)
-	fmt.Printf("start %d, end %d\n", start, end)
+	var out bytes.Buffer
+	for {
+		// fmt.Println("MD******\n", string(md), "MDEND")
+		start := bytes.Index(md, snipStart)
+		if start == -1 {
+			break
+		}
+		start += len(snipStart)
+		end := bytes.Index(md[start:], snipEnd)
+		if end == -1 {
+			break
+		}
+		end += start
+		// fmt.Printf("len %d start %d, end %d\n", len(md), start, end)
 
-	out = append(out, md[:start]...)
-	code := md[start:end]
-	fmt.Println("CODE", string(code))
-	formatted, err := format.Source(code)
-	if err != nil {
-		return nil, err
+		out.Write(md[:start])
+		code := md[start:end]
+		// fmt.Println("CODE******\n", string(code), "CODEEND")
+		formatted, err := format.Source(code)
+		if err != nil {
+			return nil, err
+		}
+		out.Write(formatted)
+		out.Write(snipEnd)
+		md = md[end+len(snipEnd):]
 	}
-	out = append(out, formatted...)
-	out = append(out, md[end:]...)
-	return out, nil
+	out.WriteByte('\n')
+	return out.Bytes(), nil
 }

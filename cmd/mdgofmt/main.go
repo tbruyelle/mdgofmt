@@ -23,5 +23,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Fprint(f, bz)
+	fmt.Print(string(bz))
 }
