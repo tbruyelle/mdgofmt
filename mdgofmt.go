@@ -1,33 +1,32 @@
 package mdgofmt
 
 import (
+	"bytes"
 	"fmt"
 	"go/format"
-	"strings"
 )
 
 var (
-	snipStart = "```go\n"
-	snipEnd   = "\n```"
+	snipStart = []byte("```go\n")
+	snipEnd   = []byte("\n```")
 )
 
-func Format(md string) (string, error) {
+func Format(md []byte) ([]byte, error) {
 	var (
-		out   strings.Builder
-		start = strings.Index(md, snipStart) + len(snipStart)
-		end   = strings.Index(md[start:], snipEnd) + start
+		out   []byte
+		start = bytes.Index(md, snipStart) + len(snipStart)
+		end   = bytes.Index(md[start:], snipEnd) + start
 	)
 	fmt.Printf("start %d, end %d\n", start, end)
 
-	out.WriteString(md[:start])
-	// fmt.Println(out)
+	out = append(out, md[:start]...)
 	code := md[start:end]
-	fmt.Println("CODE", code)
-	formatted, err := format.Source([]byte(code))
+	fmt.Println("CODE", string(code))
+	formatted, err := format.Source(code)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	out.Write(formatted)
-	out.WriteString(md[end:])
-	return out.String(), nil
+	out = append(out, formatted...)
+	out = append(out, md[end:]...)
+	return out, nil
 }

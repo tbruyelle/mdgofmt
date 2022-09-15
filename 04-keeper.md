@@ -61,10 +61,7 @@ func (k msgServer) BuyName(goCtx context.Context, msg *types.MsgBuyName) (*types
 		}
 
 		// Otherwise (when the bid is higher), send tokens from the buyer to the owner
-		err := k.bankKeeper.SendCoins(ctx, buyer, owner, bid)
-    if err != nil {
-      return nil, err
-    }
+		k.bankKeeper.SendCoins(ctx, buyer, owner, bid)
 	} else { // If the name is not found in the store
 		// If the minimum price is higher than the bid
 		if minPrice.IsAllGT(bid) {
