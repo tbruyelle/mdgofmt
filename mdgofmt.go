@@ -30,7 +30,7 @@ func Format(md []byte) ([]byte, error) {
 
 		out.Write(md[:start])
 		code := md[start:end]
-		fmt.Println("CODE******\n", string(code), "CODEEND")
+		// fmt.Println("CODE******\n", string(code), "CODEEND")
 		formatted, err := format.Source(code)
 		if err != nil {
 			return nil, err
@@ -39,8 +39,5 @@ func Format(md []byte) ([]byte, error) {
 		out.Write(snipEnd)
 		md = md[end+len(snipEnd):]
 	}
-	// if out.Len() > 0 {
-	// out.WriteByte('\n')
-	// }
 	return out.Bytes(), nil
 }
