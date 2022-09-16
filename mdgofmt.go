@@ -8,13 +8,12 @@ import (
 
 var (
 	snipStart = []byte("```go\n")
-	snipEnd   = []byte("\n```")
+	snipEnd   = []byte("```")
 )
 
 func Format(md []byte) ([]byte, error) {
 	var out bytes.Buffer
 	for {
-		// fmt.Println("MD******\n", string(md), "MDEND")
 		start := bytes.Index(md, snipStart)
 		if start == -1 {
 			out.Write(md)
@@ -33,12 +32,7 @@ func Format(md []byte) ([]byte, error) {
 		// fmt.Println("CODE******\n", string(code), "CODEEND")
 		formatted, err := format.Source(code)
 		if err != nil {
-			return nil, err
-		}
-		if bytes.HasSuffix(formatted, []byte("\n")) {
-			// gofmt adds an extra \n when code starts with package, we don't want
-			// that for snippets.
-			formatted = formatted[:len(formatted)-1]
+			return nil, fmt.Errorf("format source at %d: %w", start, err)
 		}
 		out.Write(formatted)
 		out.Write(snipEnd)

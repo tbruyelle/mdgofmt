@@ -27,7 +27,7 @@ func TestFormat(t *testing.T) {
 		{
 			name:          "bad code snipet",
 			path:          "testdata/invalidsnippet3.md",
-			expectedError: "1:25: expected operand, found ')' (and 1 more errors)",
+			expectedError: "format source at 6: 1:25: expected operand, found ')' (and 1 more errors)",
 		},
 		{
 			name: "empty",
@@ -44,6 +44,10 @@ func TestFormat(t *testing.T) {
 		{
 			name: "2 snippets",
 			path: "testdata/2snippets.md",
+		},
+		{
+			name: "indented snippet",
+			path: "testdata/indentedsnippet.md",
 		},
 	}
 	for _, tt := range tests {

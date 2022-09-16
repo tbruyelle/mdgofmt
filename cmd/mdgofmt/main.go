@@ -1,27 +1,30 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/tbruyelle/mdgofmt"
 )
 
+var write = flag.Bool("w", false, "write result to (source) file instead of stdout")
+
 func main() {
-	file := os.Args[1]
-	f, err := os.Open(file)
-	if err != nil {
-		panic(err)
+	flag.Parse()
+	for _, file := range flag.Args() {
+		bz, err := os.ReadFile(file)
+		if err != nil {
+			panic(err)
+		}
+		bz, err = mdgofmt.Format(bz)
+		if err != nil {
+			panic(err)
+		}
+		if *write {
+			os.WriteFile(file, bz, 0o644)
+		} else {
+			fmt.Print(string(bz))
+		}
 	}
-	defer f.Close()
-	bz, err := io.ReadAll(f)
-	if err != nil {
-		panic(err)
-	}
-	bz, err = mdgofmt.Format(bz)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Print(string(bz))
 }
