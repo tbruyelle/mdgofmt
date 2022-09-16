@@ -10,8 +10,19 @@ import (
 
 var write = flag.Bool("w", false, "write result to (source) file instead of stdout")
 
-func main() {
+func init() {
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "usage: mdgofmt [flags] path ...\n")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
+}
+
+func main() {
+	if len(flag.Args()) == 0 {
+		flag.Usage()
+		return
+	}
 	for _, file := range flag.Args() {
 		bz, err := os.ReadFile(file)
 		if err != nil {
