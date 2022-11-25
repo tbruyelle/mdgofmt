@@ -9,6 +9,11 @@ import (
 var (
 	snipStart = []byte("```go\n")
 	snipEnd   = []byte("```")
+
+	replacements = [][][]byte{
+		{[]byte("{ModulePath}"), []byte("ModulePath")},
+		{[]byte("{BinaryNamePrefix}"), []byte("BinaryNamePrefix")},
+	}
 )
 
 func Format(md []byte) ([]byte, error) {
@@ -33,10 +38,16 @@ func Format(md []byte) ([]byte, error) {
 
 		out.Write(md[:start])
 		code := md[start:end]
+		for i := range replacements {
+			code = bytes.ReplaceAll(code, replacements[i][0], replacements[i][1])
+		}
 		// fmt.Println("CODE******\n", string(code), "CODEEND")
 		formatted, err := format.Source(code)
 		if err != nil {
-			return nil, fmt.Errorf("format source at %d: %w", start+fileIndex, err)
+			return nil, fmt.Errorf("format source at %d: %w\n%s", start+fileIndex, err, code)
+		}
+		for i := range replacements {
+			formatted = bytes.ReplaceAll(formatted, replacements[i][1], replacements[i][0])
 		}
 		out.Write(formatted)
 		out.Write(snipEnd)
