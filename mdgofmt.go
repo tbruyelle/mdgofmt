@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	snipStart = []byte("```go\n")
+	snipStart = []byte("```go")
 	snipEnd   = []byte("```")
 
 	replacements = [][][]byte{
@@ -27,7 +27,11 @@ func Format(md []byte) ([]byte, error) {
 			out.Write(md)
 			break
 		}
-		start += len(snipStart)
+		// move start until it reach the end of snipStart line
+		// (we may need to skip snippet's attributes)
+		for start += len(snipStart); md[start] != '\n'; start++ {
+		}
+		start++ // skip final \n
 
 		end := bytes.Index(md[start:], snipEnd)
 		if end == -1 {

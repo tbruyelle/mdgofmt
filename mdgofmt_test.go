@@ -53,6 +53,10 @@ func TestFormat(t *testing.T) {
 			name: "snippet with placeholders",
 			path: "testdata/snippet-with-placeholder.md",
 		},
+		{
+			name: "snippet with attribute",
+			path: "testdata/snippet-with-attrs.md",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
