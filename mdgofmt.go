@@ -11,6 +11,7 @@ var (
 	snipEnd   = []byte("```")
 
 	replacements = [][][]byte{
+		{[]byte("{moduleName}"), []byte("moduleName")},
 		{[]byte("{ModulePath}"), []byte("ModulePath")},
 		{[]byte("{BinaryNamePrefix}"), []byte("BinaryNamePrefix")},
 	}
@@ -27,9 +28,15 @@ func Format(md []byte) ([]byte, error) {
 			out.Write(md)
 			break
 		}
+		start += len(snipStart)
+		if c := md[start]; c != ' ' && c != '\n' {
+			// not a go snipet
+			out.Write(md)
+			break
+		}
 		// move start until it reach the end of snipStart line
 		// (we may need to skip snippet's attributes)
-		for start += len(snipStart); md[start] != '\n'; start++ {
+		for ; md[start] != '\n'; start++ {
 		}
 		start++ // skip final \n
 
