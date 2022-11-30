@@ -11,9 +11,9 @@ var (
 	snipEnd   = []byte("```")
 
 	replacements = [][][]byte{
-		{[]byte("{moduleName}"), []byte("moduleName")},
-		{[]byte("{ModulePath}"), []byte("ModulePath")},
-		{[]byte("{BinaryNamePrefix}"), []byte("BinaryNamePrefix")},
+		{[]byte("{moduleName}"), []byte("xxxmoduleNamexxx")},
+		{[]byte("{ModulePath}"), []byte("xxxModulePathxxx")},
+		{[]byte("{BinaryNamePrefix}"), []byte("xxxBinaryNamePrefixxxx")},
 	}
 )
 
